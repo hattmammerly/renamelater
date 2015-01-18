@@ -1,3 +1,9 @@
+/**
+ * \file Library.h
+ * \author Matt Hammerly
+ * \brief Contains the definition of the Library class
+ */
+
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
