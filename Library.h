@@ -7,6 +7,8 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
+#include "config.h"
+
 /**
  * \brief This class will talk to postgres so you don't have to
  *
@@ -31,6 +33,7 @@ public:
 
     /** \brief Destructor */
     ~CLibrary() {}
+
 };
 
 #endif
