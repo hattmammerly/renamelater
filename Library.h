@@ -7,6 +7,7 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
+#include <postgresql/libpq-fe.h>
 #include "config.h"
 
 /**
@@ -20,8 +21,8 @@ class CLibrary
 {
 public:
 
-    /** \brief Default constructor */
-    CLibrary() {}
+    CLibrary();
+    ~CLibrary();
 
     /** \brief Copy constructor (disabled)
      * \param library Library to construct this based on */
@@ -31,8 +32,9 @@ public:
      * \param library Library whose attributes will override those of the current library */
     CLibrary& operator=(const CLibrary &library) = delete;
 
-    /** \brief Destructor */
-    ~CLibrary() {}
+
+private:
+    PGconn *mConnection;                ///< Postgres database connection struct
 
 };
 
