@@ -32,6 +32,9 @@ public:
      * \param library Library whose attributes will override those of the current library */
     CLibrary& operator=(const CLibrary &library) = delete;
 
+    int PrepareDatabase();
+    int DestroyDatabase();
+
 
 private:
     PGconn *mConnection;                ///< Postgres database connection struct
