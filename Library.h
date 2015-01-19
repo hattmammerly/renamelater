@@ -37,6 +37,8 @@ public:
 
     ConnStatusType GetStatus();
 
+    PGconn* GetConnection();
+
 
 
 private:

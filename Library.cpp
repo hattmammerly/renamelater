@@ -122,3 +122,14 @@ ConnStatusType CLibrary::GetStatus()
 {
     return PQstatus(mConnection);
 }
+
+/**
+ * \brief Returns a pointer to the connection object
+ *
+ * It makes tests easier. Might make this protected and
+ * require a testing subclass to use this later, whatever.
+ */
+PGconn* CLibrary::GetConnection()
+{
+    return mConnection;
+}
