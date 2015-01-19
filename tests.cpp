@@ -19,9 +19,6 @@ int main()
 
     Test_Library_Constructor();
 
-    library.DestroyDatabase();
-    library.PrepareDatabase();
-
     return 0;
 }
 
