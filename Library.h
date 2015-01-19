@@ -35,6 +35,9 @@ public:
     int PrepareDatabase();
     int DestroyDatabase();
 
+    ConnStatusType GetStatus();
+
+
 
 private:
     PGconn *mConnection;                ///< Postgres database connection struct

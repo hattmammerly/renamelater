@@ -111,3 +111,14 @@ int CLibrary::DestroyDatabase()
 
     return 0;
 }
+
+/**
+ * \brief Exposes the database connection status
+ * \returns PostgreSQL connection status object
+ *
+ * Just in case.
+ */
+ConnStatusType CLibrary::GetStatus()
+{
+    return PQstatus(mConnection);
+}
