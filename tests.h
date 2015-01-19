@@ -8,4 +8,6 @@
 
 void Test_LibraryConstructor();
 
+void Test_PrepareDatabase();
+
 #endif
