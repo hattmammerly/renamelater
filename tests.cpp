@@ -51,7 +51,7 @@ void Test_PrepareDatabase()
     // We need the unwrapped connection object for arbitrary queries to test
     PGconn *conn = library.GetConnection();
 
-    // Check to see if the tracks table exists
+    // Check to see if tables exist
     // Three rows should be returned; one for tracks, one for playlists, one for tracks_playlists
     PGresult* res_tables = PQexec(conn, "SELECT table_name FROM information_schema.tables WHERE table_name IN ('tracks', 'playlists', 'tracks_playlists');");
     assert(PQntuples(res_tables) == 3);
