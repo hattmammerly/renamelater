@@ -10,4 +10,6 @@ void Test_LibraryConstructor();
 
 void Test_PrepareDatabase();
 
+void Test_DestroyDatabase();
+
 #endif

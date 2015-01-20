@@ -22,6 +22,8 @@ int main()
 
     Test_PrepareDatabase();
 
+    Test_DestroyDatabase();
+
     return 0;
 }
 
@@ -69,3 +71,35 @@ void Test_PrepareDatabase()
     cout << "OK" << endl;
 }
 
+/**
+ * \brief Ensure database objects are deleted when asked
+ */
+void Test_DestroyDatabase()
+{
+    cout << "Test_DestroyDatabase... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    library.DestroyDatabase();
+
+    // We need the unwrapped connection object for arbitrary queries to test
+    PGconn *conn = library.GetConnection();
+
+    // Check to see if tables exist
+    PGresult* res_tables = PQexec(conn, "SELECT table_name FROM information_schema.tables WHERE table_name IN ('tracks', 'playlists', 'tracks_playlists');");
+    assert(PQntuples(res_tables) == 0);
+
+    // Check to see if the tracks_playlists_insert_func procedure exists
+    PGresult* res_func = PQexec(conn, "SELECT routine_name FROM information_schema.routines WHERE routine_name = 'tracks_playlists_insert_func';");
+    assert(PQntuples(res_func) == 0);
+
+    // Check to see if the tracks_playlists_insert_trg trigger exists
+    PGresult* res_trg = PQexec(conn, "SELECT trigger_name FROM information_schema.triggers WHERE trigger_name = 'tracks_playlists_insert_trg';");
+    assert(PQntuples(res_trg) == 0);
+
+
+    cout << "OK" << endl;
+
+}
