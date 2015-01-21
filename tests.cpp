@@ -24,6 +24,10 @@ int main()
 
     Test_DestroyDatabase();
 
+    // So I can poke around manually after running tests
+    CLibrary library;
+    library.PrepareDatabase();
+
     return 0;
 }
 
