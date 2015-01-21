@@ -51,6 +51,7 @@ int CLibrary::PrepareDatabase()
             "CREATE TABLE IF NOT EXISTS tracks (\
                 id SERIAL NOT NULL PRIMARY KEY,\
                 location TEXT NOT NULL,\
+                date_added TIMESTAMPTZ NOT NULL DEFAULT NOW(),\
                 flag INTEGER NOT NULL DEFAULT 0\
           )");
     PQexec(mConnection,
