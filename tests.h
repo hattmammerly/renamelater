@@ -14,4 +14,6 @@ void Test_DestroyDatabase();
 
 void Test_AddTrack();
 
+void Test_AddPlaylist();
+
 #endif
