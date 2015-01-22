@@ -153,7 +153,12 @@ std::string CLibrary::AddTrack(std::string filepath)
 
     PGresult *res = PQexec(mConnection, query.c_str());
     char *id = PQgetvalue(res, 0, 0);
-    return std::string(id);
+
+    // Create an std::string to return so we can appropriately free the PGresult
+    std::string std_id(id);
+    PQclear(res);
+
+    return std_id;
 }
 
 /**
@@ -174,5 +179,10 @@ std::string CLibrary::AddPlaylist(std::string title)
 
     PGresult *res = PQexec(mConnection, query.c_str());
     char *id = PQgetvalue(res, 0, 0);
-    return std::string(id);
+
+    // Create an std::string to return so we can appropriately free the PGresult
+    std::string std_id(id);
+    PQclear(res);
+
+    return std_id;
 }
