@@ -41,6 +41,7 @@ public:
 
     std::string AddTrack(std::string filepath);
 
+    std::string AddPlaylist(std::string title);
 
 private:
     PGconn *mConnection;                ///< Postgres database connection struct

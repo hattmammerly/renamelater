@@ -155,3 +155,24 @@ std::string CLibrary::AddTrack(std::string filepath)
     char* id = PQgetvalue(res, 0, 0);
     return std::string(id);
 }
+
+/**
+ * \brief Add a playlist to the database
+ * \param title The title of the playlist to be added
+ * \returns The ID of the new playlist (as a string)
+ */
+std::string CLibrary::AddPlaylist(std::string title)
+{
+    std::string query = "INSERT INTO tracks (title) VALUES (";
+
+    // Safety first
+    char *escaped_title = PQescapeLiteral(mConnection, title.c_str(), title.length());
+    query.append(escaped_title);
+    PQfreemem(escaped_title);
+
+    query.append(") RETURNING id");
+
+    PGresult *res = PQexec(mConnection, query.c_str());
+    char *id = PQgetvalue(res, 0, 0);
+    return std::string(id);
+}
