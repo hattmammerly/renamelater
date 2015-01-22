@@ -134,3 +134,24 @@ PGconn* CLibrary::GetConnection()
 {
     return mConnection;
 }
+
+/**
+ * \brief Add a track to the database
+ * \param filepath The filepath of the file to be added
+ * \returns The ID of the new track (as a string)
+ */
+std::string CLibrary::AddTrack(std::string filepath)
+{
+    std::string query = "INSERT INTO tracks (location) VALUES (";
+
+    // Safety first
+    char* escaped_filepath = PQescapeLiteral(mConnection, filepath.c_str(), filepath.length());
+    query.append(escaped_filepath);
+    PQfreemem(escaped_filepath);
+
+    query.append(") RETURNING id");
+
+    PGresult *res = PQexec(mConnection, query.c_str());
+    char* id = PQgetvalue(res, 0, 0);
+    return std::string(id);
+}

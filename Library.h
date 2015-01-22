@@ -39,6 +39,7 @@ public:
 
     PGconn* GetConnection();
 
+    std::string AddTrack(std::string filepath);
 
 
 private:
