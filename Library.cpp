@@ -60,7 +60,7 @@ int CLibrary::PrepareDatabase()
             "CREATE TABLE IF NOT EXISTS playlists (\
                 id SERIAL NOT NULL PRIMARY KEY,\
                 title TEXT NOT NULL,\
-                length INTEGER NOT NULL\
+                length INTEGER NOT NULL DEFAULT 0\
           )");
     PQclear(res);
 
@@ -183,7 +183,7 @@ std::string CLibrary::AddTrack(std::string filepath)
  */
 std::string CLibrary::AddPlaylist(std::string title)
 {
-    std::string query = "INSERT INTO tracks (title) VALUES (";
+    std::string query = "INSERT INTO playlists (title) VALUES (";
 
     // Safety first
     char *escaped_title = PQescapeLiteral(mConnection, title.c_str(), title.length());
