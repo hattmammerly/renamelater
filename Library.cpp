@@ -47,30 +47,36 @@ CLibrary::~CLibrary()
  */
 int CLibrary::PrepareDatabase()
 {
-    PQexec(mConnection,
+    PGresult *res;
+    res = PQexec(mConnection,
             "CREATE TABLE IF NOT EXISTS tracks (\
                 id SERIAL NOT NULL PRIMARY KEY,\
                 filepath TEXT NOT NULL,\
                 date_added TIMESTAMPTZ NOT NULL DEFAULT NOW(),\
                 flag INTEGER NOT NULL DEFAULT 0\
           )");
-    PQexec(mConnection,
+    PQclear(res);
+
+    res = PQexec(mConnection,
             "CREATE TABLE IF NOT EXISTS playlists (\
                 id SERIAL NOT NULL PRIMARY KEY,\
                 title TEXT NOT NULL,\
                 length INTEGER NOT NULL,\
                 flag INTEGER NOT NULL DEFAULT 0\
           )");
-    PQexec(mConnection,
+    PQclear(res);
+
+    res = PQexec(mConnection,
             "CREATE TABLE IF NOT EXISTS tracks_playlists (\
                 id SERIAL NOT NULL PRIMARY KEY,\
                 track_id INTEGER NOT NULL,\
                 playlist_id INTEGER NOT NULL,\
                 position FLOAT NOT NULL\
           )");
+    PQclear(res);
 
     // Create a function to adjust the length of a playlist
-    PQexec(mConnection,
+    res = PQexec(mConnection,
             "CREATE OR REPLACE FUNCTION tracks_playlists_insert_func() RETURNS TRIGGER\
             LANGUAGE plpgsql\
             AS $tracks_playlists_insert_func$\
@@ -86,12 +92,14 @@ int CLibrary::PrepareDatabase()
                 RETURN NULL;\
             END;\
             $tracks_playlists_insert_func$;");
+    PQclear(res);
 
     // Create a trigger to adjust the length of a playlist on each insert or delete
-    PQexec(mConnection,
+    res = PQexec(mConnection,
             "CREATE TRIGGER tracks_playlists_insert_trg\
             AFTER INSERT OR DELETE ON tracks_playlists\
             FOR EACH ROW EXECUTE PROCEDURE tracks_playlists_insert_func();");
+    PQclear(res);
 
     return 0;
 }
@@ -103,12 +111,21 @@ int CLibrary::PrepareDatabase()
  */
 int CLibrary::DestroyDatabase()
 {
-    PQexec(mConnection, "DROP TRIGGER IF EXISTS tracks_playlists_insert_trg ON tracks_playlists;");
-    PQexec(mConnection, "DROP FUNCTION IF EXISTS tracks_playlists_insert_func() CASCADE;");
+    PGresult *res;
+    res = PQexec(mConnection, "DROP TRIGGER IF EXISTS tracks_playlists_insert_trg ON tracks_playlists;");
+    PQclear(res);
 
-    PQexec(mConnection, "DROP TABLE IF EXISTS tracks;");
-    PQexec(mConnection, "DROP TABLE IF EXISTS playlists;");
-    PQexec(mConnection, "DROP TABLE IF EXISTS tracks_playlists;");
+    res = PQexec(mConnection, "DROP FUNCTION IF EXISTS tracks_playlists_insert_func() CASCADE;");
+    PQclear(res);
+
+    res = PQexec(mConnection, "DROP TABLE IF EXISTS tracks;");
+    PQclear(res);
+
+    res = PQexec(mConnection, "DROP TABLE IF EXISTS playlists;");
+    PQclear(res);
+
+    res = PQexec(mConnection, "DROP TABLE IF EXISTS tracks_playlists;");
+    PQclear(res);
 
     return 0;
 }
