@@ -50,7 +50,7 @@ int CLibrary::PrepareDatabase()
     PQexec(mConnection,
             "CREATE TABLE IF NOT EXISTS tracks (\
                 id SERIAL NOT NULL PRIMARY KEY,\
-                location TEXT NOT NULL,\
+                filepath TEXT NOT NULL,\
                 date_added TIMESTAMPTZ NOT NULL DEFAULT NOW(),\
                 flag INTEGER NOT NULL DEFAULT 0\
           )");
@@ -142,7 +142,7 @@ PGconn* CLibrary::GetConnection()
  */
 std::string CLibrary::AddTrack(std::string filepath)
 {
-    std::string query = "INSERT INTO tracks (location) VALUES (";
+    std::string query = "INSERT INTO tracks (filepath) VALUES (";
 
     // Safety first
     char* escaped_filepath = PQescapeLiteral(mConnection, filepath.c_str(), filepath.length());
