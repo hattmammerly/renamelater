@@ -201,3 +201,24 @@ std::string CLibrary::AddPlaylist(std::string title)
 
     return std_id;
 }
+
+/**
+ * \brief Removes a playlist from the database, and all records of membership in the playlist
+ * \param id ID of the playlist to be deleted
+ * \returns ID of the deleted playlist
+ */
+std::string CLibrary::RemovePlaylist(std::string id)
+{
+    std::string query = "DELETE FROM tracks WHERE id=";
+
+    char escaped_id[30];
+    PQescapeStringConn(mConnection, escaped_id, id.c_str(), 30, 0);
+    query.append(escaped_id);
+    query.append("; DELETE FROM tracks_playlists WHERE playlist_id=");
+    query.append(escaped_id);
+
+    PGresult *res = PQexec(mConnection, query.c_str());
+    PQclear(res);
+
+    return id;
+}

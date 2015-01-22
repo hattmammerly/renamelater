@@ -43,6 +43,8 @@ public:
 
     std::string AddPlaylist(std::string title);
 
+    std::string RemovePlaylist(std::string id);
+
 private:
     PGconn *mConnection;                ///< Postgres database connection struct
 
