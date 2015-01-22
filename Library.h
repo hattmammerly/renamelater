@@ -43,6 +43,8 @@ public:
 
     std::string AddPlaylist(std::string title);
 
+    std::string RemoveTrack(std::string id);
+
     std::string RemovePlaylist(std::string id);
 
 private:
