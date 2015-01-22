@@ -59,15 +59,18 @@ void Test_PrepareDatabase()
     // Three rows should be returned; one for tracks, one for playlists, one for tracks_playlists
     PGresult* res_tables = PQexec(conn, "SELECT table_name FROM information_schema.tables WHERE table_name IN ('tracks', 'playlists', 'tracks_playlists');");
     assert(PQntuples(res_tables) == 3);
+    PQclear(res_tables);
 
     // Check to see if the tracks_playlists_insert_func procedure exists
     PGresult* res_func = PQexec(conn, "SELECT routine_name FROM information_schema.routines WHERE routine_name = 'tracks_playlists_insert_func';");
     assert(PQntuples(res_func) == 1);
+    PQclear(res_func);
 
     // Check to see if the tracks_playlists_insert_trg trigger exists
     // Two records should be returned; one for ON INSERT, one for ON DELETE
     PGresult* res_trg = PQexec(conn, "SELECT trigger_name FROM information_schema.triggers WHERE trigger_name = 'tracks_playlists_insert_trg';");
     assert(PQntuples(res_trg) == 2);
+    PQclear(res_trg);
 
     // clean up, I guess
     library.DestroyDatabase();
@@ -94,14 +97,17 @@ void Test_DestroyDatabase()
     // Check to see if tables exist
     PGresult* res_tables = PQexec(conn, "SELECT table_name FROM information_schema.tables WHERE table_name IN ('tracks', 'playlists', 'tracks_playlists');");
     assert(PQntuples(res_tables) == 0);
+    PQclear(res_tables);
 
     // Check to see if the tracks_playlists_insert_func procedure exists
     PGresult* res_func = PQexec(conn, "SELECT routine_name FROM information_schema.routines WHERE routine_name = 'tracks_playlists_insert_func';");
     assert(PQntuples(res_func) == 0);
+    PQclear(res_func);
 
     // Check to see if the tracks_playlists_insert_trg trigger exists
     PGresult* res_trg = PQexec(conn, "SELECT trigger_name FROM information_schema.triggers WHERE trigger_name = 'tracks_playlists_insert_trg';");
     assert(PQntuples(res_trg) == 0);
+    PQclear(res_trg);
 
 
     cout << "OK" << endl;
