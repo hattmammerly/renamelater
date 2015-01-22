@@ -12,6 +12,9 @@
 
 using std::cout; using std::endl;
 
+/// File location of one track
+const std::string track1 = "/home/matt/hdd/dev/cpp/musicmanager/test_data/Gregory And The Hawk/The Boats & Birds EP/01 Boats & Birds.mp3";
+
 /**
  * \brief Main entry point of program, where tests will be run
  */
@@ -23,6 +26,8 @@ int main()
     Test_PrepareDatabase();
 
     Test_DestroyDatabase();
+    
+    Test_AddTrack();
 
     // So I can poke around manually after running tests
     CLibrary library;
@@ -112,4 +117,46 @@ void Test_DestroyDatabase()
 
     cout << "OK" << endl;
 
+}
+
+/**
+ * \brief Ensure tracks can be added properly"
+ *
+ * Maybe later I'll figure out how to verify that the date is correct
+ */
+void Test_AddTrack()
+{
+    cout << "Test_AddTrack... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    std::string id = library.AddTrack(track1);
+
+    // We need the unwrapped connection object for arbitrary queries to test
+    PGconn* conn = library.GetConnection();
+
+    std::string query = "SELECT * FROM tracks WHERE id=";
+
+    // id should never not be a numeric string but safety first
+    char escaped_id[30];
+    PQescapeStringConn(conn, escaped_id, id.c_str(), 30, 0);
+    query.append(escaped_id);
+
+    PGresult* res = PQexec(conn, query.c_str());
+
+    // Is there actually a row inserted with our id?
+    std::string new_id(PQgetvalue(res, 0, 0));
+    assert(new_id == id);
+
+    // Is it the same one (same filepath) that we entered?
+    std::string filepath(PQgetvalue(res, 0, 1));
+    assert(filepath == track1);
+
+    PQclear(res);
+
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
 }

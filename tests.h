@@ -12,4 +12,6 @@ void Test_PrepareDatabase();
 
 void Test_DestroyDatabase();
 
+void Test_AddTrack();
+
 #endif
