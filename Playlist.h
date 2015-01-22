@@ -7,6 +7,8 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
+#include <string>
+
 /**
  * \brief This class will represent a music playlist
  *
@@ -32,6 +34,16 @@ public:
 
     /** \brief Destructor */
     ~CPlaylist() {}
+
+private:
+    /// The id of the playlist in the database
+    std::string mId = "";
+
+    /// The title of the playlist
+    std::string mTitle = "";
+
+    /// The length of the playlist
+    std::string length = "";
 };
 
 #endif

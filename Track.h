@@ -7,6 +7,8 @@
 #ifndef TRACK_H
 #define TRACK_H
 
+#include <string>
+
 /**
  * \brief This class represents a track in the library
  *
@@ -30,6 +32,16 @@ public:
 
     /** \brief Destructor */
     ~CTrack() {}
+
+private:
+    /// The id of the track in the database
+    std::string mId = "";
+
+    /// The filepath of the track
+    std::string mFilepath = "";
+
+    /// The date the track was added
+    std::string mDateAdded = "";
 };
 
 #endif
