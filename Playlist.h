@@ -63,6 +63,8 @@ public:
      */
     CLibrary *GetLibrary() { return mLibrary; }
 
+    std::string AppendTrack(std::string id);
+
 private:
     /// The id of the playlist in the database
     std::string mId;

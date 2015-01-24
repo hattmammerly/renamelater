@@ -48,3 +48,41 @@ CPlaylist::CPlaylist(CLibrary *library, std::string id)
 
     // Fill in any logic necessary to populate a container with associated tracks
 }
+
+/**
+ * \brief Append a track to a playlist
+ * \param id The database ID of the track to append
+ * \returns ID of the association record, or "temp" if a temp playlist
+ */
+std::string CPlaylist::AppendTrack(std::string id)
+{
+    // Fill in any logic necessary to append a Track object to this playlist's container
+
+    if (mId != "temp")
+    {
+        PGconn* conn = mLibrary->GetConnection();
+
+        char escaped_playlist_id[30];
+        PQescapeStringConn(conn, escaped_playlist_id, mId.c_str(), 30, 0);
+        char escaped_track_id[30];
+        PQescapeStringConn(conn, escaped_track_id, id.c_str(), 30, 0);
+
+        std::string query = "INSERT INTO tracks_playlists (playlist_id, track_id, position) SELECT ";
+        query.append(escaped_playlist_id);
+        query.append(", ");
+        query.append(escaped_track_id);
+        query.append(", COALESCE(MAX(position), 0) + 1 FROM tracks_playlists WHERE playlist_id=");
+        query.append(escaped_playlist_id);
+        query.append(" RETURNING id");
+
+        PGresult *res = PQexec(conn, query.c_str());
+        
+        std::string associationId(PQgetvalue(res, 0, 0));
+        PQclear(res);
+
+        return associationId;
+    }
+    else {  // No association was created; this is for a temporary playlist
+        return "temp";
+    }
+}
