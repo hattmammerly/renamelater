@@ -99,6 +99,10 @@ int CLibrary::PrepareDatabase()
             FOR EACH ROW EXECUTE PROCEDURE tracks_playlists_insert_func();");
     PQclear(res);
 
+    // Create a default playlist for all songs to be added to
+    res = PQexec(mConnection, "INSERT INTO playlists (title) VALUES ('library')");
+    PQclear(res);
+
     return 0;
 }
 
