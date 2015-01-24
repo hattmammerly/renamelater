@@ -82,6 +82,11 @@ void Test_Library_PrepareDatabase()
     assert(PQntuples(res_trg) == 2);
     PQclear(res_trg);
 
+    // Check to see if the default library playlist was properly created
+    PGresult *res_playlist = PQexec(conn, "SELECT id, title, length FROM playlists WHERE id=1");
+    assert(PQntuples(res_playlist) == 1);
+    PQclear(res_playlist);
+
     // clean up, I guess
     library.DestroyDatabase();
 
