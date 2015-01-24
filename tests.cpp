@@ -15,6 +15,9 @@ using std::cout; using std::endl;
 /// File location of one track
 const std::string track1 = "/home/matt/hdd/dev/cpp/musicmanager/test_data/Gregory And The Hawk/The Boats & Birds EP/01 Boats & Birds.mp3";
 
+/// File location of another track
+const std::string track2 = "/home/matt/hdd/dev/cpp/musicmanager/test_data/Beirut/The Flying Club Cup/05 la banlieue.m4a";
+
 /// Title of one playlist
 const std::string playlist1 = "test1";
 
@@ -35,6 +38,8 @@ int main()
     Test_Library_AddPlaylist();
 
     Test_Playlist_Constructors();
+
+    Test_Playlist_AppendTrack();
 
     // So I can poke around manually after running tests
     //CLibrary library;
@@ -242,6 +247,84 @@ void Test_Playlist_Constructors()
     assert(playlist2.GetLibrary() == &library);
     
     library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+/**
+ * \brief Ensure tracks can be properly appended to playlists
+ *
+ * Note: This isn't done. Verify that Track objects are properly appended
+ * to their containers when the Track Class is implemented
+ */
+void Test_Playlist_AppendTrack()
+{
+    cout << "Test_Playlist_AppendTrack... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    // Adding tracks that can be added to playlists
+    std::string track1_id = library.AddTrack(track1);
+    std::string track2_id = library.AddTrack(track2);
+
+    CPlaylist db_playlist(&library, "1"); // a playlist from the database
+    CPlaylist temp_playlist(&library);    // a temp playlist not in the database
+
+    std::string association1 = db_playlist.AppendTrack(track1_id);
+    std::string association2 = db_playlist.AppendTrack(track2_id);
+
+    std::string association3 = temp_playlist.AppendTrack(track1_id);
+    std::string association4 = temp_playlist.AppendTrack(track2_id);
+
+    assert(association3 == "temp");
+    assert(association4 == "temp");
+
+    // Insert logic to make sure Track objects were appropriately added to the container
+    // for both playlists
+
+    // Verify that the proper database records were created
+    if (db_playlist.GetId() != "temp")
+    {
+        PGconn *conn = library.GetConnection();
+
+        std::string query = "SELECT id, playlist_id, track_id, position FROM tracks_playlists WHERE playlist_id = ";
+
+        char escaped_playlist_id[30];
+        PQescapeStringConn(conn, escaped_playlist_id, db_playlist.GetId().c_str(), 30, 0);
+
+        query.append(escaped_playlist_id);
+
+        PGresult *res = PQexec(conn, query.c_str());
+
+        std::string association1_id(PQgetvalue(res, 0, 0));
+        std::string association1_playlist_id(PQgetvalue(res, 0, 1));
+        std::string association1_track_id(PQgetvalue(res, 0, 2));
+        std::string association1_position(PQgetvalue(res, 0, 3));
+        std::string association2_id(PQgetvalue(res, 1, 0));
+        std::string association2_playlist_id(PQgetvalue(res, 1, 1));
+        std::string association2_track_id(PQgetvalue(res, 1, 2));
+        std::string association2_position(PQgetvalue(res, 1, 3));
+
+        assert(association1 == association1_id);
+        assert(db_playlist.GetId() == association1_playlist_id);
+        assert(track1_id == association1_track_id);
+        assert("1" == association1_position);
+        assert(association2 == association2_id);
+        assert(db_playlist.GetId() == association2_playlist_id);
+        assert(track2_id == association2_track_id);
+        assert("2" == association2_position);
+        
+        PQclear(res);
+    }
+    else
+    {
+        assert(association1 == "temp");
+        assert(association2 == "temp");
+    }
+
+//    library.DestroyDatabase();
 
     cout << "OK" << endl;
 }

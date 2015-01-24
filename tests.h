@@ -18,4 +18,6 @@ void Test_Library_AddPlaylist();
 
 void Test_Playlist_Constructors();
 
+void Test_Playlist_AppendTrack();
+
 #endif
