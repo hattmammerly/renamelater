@@ -6,14 +6,14 @@
 #ifndef TESTS_H
 #define TESTS_H
 
-void Test_LibraryConstructor();
+void Test_Library_Constructor();
 
-void Test_PrepareDatabase();
+void Test_Library_PrepareDatabase();
 
-void Test_DestroyDatabase();
+void Test_Library_DestroyDatabase();
 
-void Test_AddTrack();
+void Test_Library_AddTrack();
 
-void Test_AddPlaylist();
+void Test_Library_AddPlaylist();
 
 #endif

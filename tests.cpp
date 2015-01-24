@@ -24,15 +24,15 @@ const std::string playlist1 = "test1";
 int main()
 {
 
-    Test_LibraryConstructor();
+    Test_Library_Constructor();
 
-    Test_PrepareDatabase();
+    Test_Library_PrepareDatabase();
 
-    Test_DestroyDatabase();
+    Test_Library_DestroyDatabase();
     
-    Test_AddTrack();
+    Test_Library_AddTrack();
 
-    Test_AddPlaylist();
+    Test_Library_AddPlaylist();
 
     // So I can poke around manually after running tests
     //CLibrary library;
@@ -44,7 +44,7 @@ int main()
 /**
  * \brief I mean, there's constructor logic, let's test it.
  */
-void Test_LibraryConstructor()
+void Test_Library_Constructor()
 {
     cout << "Test_LibraryConstructor... ";
     CLibrary library;
@@ -55,7 +55,7 @@ void Test_LibraryConstructor()
 /**
  * \brief Ensure all expected database objects are created
  */
-void Test_PrepareDatabase()
+void Test_Library_PrepareDatabase()
 {
     cout << "Test_PrepareDatabase... ";
     CLibrary library;
@@ -91,7 +91,7 @@ void Test_PrepareDatabase()
 /**
  * \brief Ensure database objects are deleted when asked
  */
-void Test_DestroyDatabase()
+void Test_Library_DestroyDatabase()
 {
     cout << "Test_DestroyDatabase... ";
     CLibrary library;
@@ -129,7 +129,7 @@ void Test_DestroyDatabase()
  *
  * Maybe later I'll figure out how to verify that the date is correct
  */
-void Test_AddTrack()
+void Test_Library_AddTrack()
 {
     cout << "Test_AddTrack... ";
     CLibrary library;
@@ -169,7 +169,7 @@ void Test_AddTrack()
 /**
  * \brief Ensure playlists can be added properly
  */
-void Test_AddPlaylist()
+void Test_Library_AddPlaylist()
 {
     cout << "Test_AddPlaylist... ";
     CLibrary library;
