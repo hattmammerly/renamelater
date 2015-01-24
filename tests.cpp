@@ -34,6 +34,8 @@ int main()
 
     Test_Library_AddPlaylist();
 
+    Test_Playlist_Constructors();
+
     // So I can poke around manually after running tests
     //CLibrary library;
     //library.PrepareDatabase();
@@ -206,6 +208,39 @@ void Test_Library_AddPlaylist()
 
     PQclear(res);
 
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+/**
+ * \brief Ensure playlist objects are constructed properly
+ *
+ * Note: This isn't done. Verify that non-empty playlists are properly
+ * populated with Track objects when the Track class is implemented
+ */
+void Test_Playlist_Constructors()
+{
+    cout << "Test_Playlist_Constructors... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    // Should create an empty playlist
+    CPlaylist playlist(&library);
+    assert(playlist.GetId() == "temp");
+    assert(playlist.GetTitle() == "working playlist");
+    assert(playlist.GetLength() == "0");
+    assert(playlist.GetLibrary() == &library);
+
+    // Should create an object for the default playlist in db
+    CPlaylist playlist2(&library, "1");
+    assert(playlist2.GetId() == "1");
+    assert(playlist2.GetTitle() == "library");
+    assert(playlist2.GetLength() == "0");
+    assert(playlist2.GetLibrary() == &library);
+    
     library.DestroyDatabase();
 
     cout << "OK" << endl;
