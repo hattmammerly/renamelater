@@ -39,6 +39,30 @@ public:
     /** \brief Destructor */
     ~CPlaylist() {}
 
+    /**
+     * \brief Returns the ID of this playlist
+     * \returns ID as a string
+     */
+    std::string GetId() { return mId; }
+
+    /**
+     * \brief Returns the title of this playlist
+     * \returns Title as a string
+     */
+    std::string GetTitle() { return mTitle; }
+
+    /**
+     * \brief Returns the length of this playlist
+     * \returns Playlist length as a string
+     */
+    std::string GetLength() { return mLength; }
+
+    /**
+     * \brief Returns the library this playlist belongs to
+     * \returns Pointer to library object
+     */
+    CLibrary *GetLibrary() { return mLibrary; }
+
 private:
     /// The id of the playlist in the database
     std::string mId;
