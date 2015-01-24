@@ -324,7 +324,7 @@ void Test_Playlist_AppendTrack()
         assert(association2 == "temp");
     }
 
-//    library.DestroyDatabase();
+    library.DestroyDatabase();
 
     cout << "OK" << endl;
 }
