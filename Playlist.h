@@ -8,6 +8,7 @@
 #define PLAYLIST_H
 
 #include <string>
+#include "Library.h"
 
 /**
  * \brief This class will represent a music playlist
@@ -24,6 +25,9 @@ public:
     /** \brief Default constructor (disabled) */
     CPlaylist() = delete;
 
+    CPlaylist(CLibrary *library);
+    CPlaylist(CLibrary *library, std::string);
+
     /** \brief Copy constructor (disabled)
      * \param playlist Playlist to construct this based on */
     CPlaylist(const CPlaylist &playlist) = delete;
@@ -37,13 +41,16 @@ public:
 
 private:
     /// The id of the playlist in the database
-    std::string mId = "";
+    std::string mId;
 
     /// The title of the playlist
-    std::string mTitle = "";
+    std::string mTitle;
 
     /// The length of the playlist
-    std::string length = "";
+    std::string mLength;
+
+    /// The library this playlist belongs to
+    CLibrary *mLibrary;
 };
 
 #endif
