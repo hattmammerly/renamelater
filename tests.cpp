@@ -46,7 +46,7 @@ int main()
  */
 void Test_Library_Constructor()
 {
-    cout << "Test_LibraryConstructor... ";
+    cout << "Test_Library_Constructor... ";
     CLibrary library;
     assert(library.GetStatus() == CONNECTION_OK);
     cout << "OK" << endl;
@@ -57,7 +57,7 @@ void Test_Library_Constructor()
  */
 void Test_Library_PrepareDatabase()
 {
-    cout << "Test_PrepareDatabase... ";
+    cout << "Test_Library_PrepareDatabase... ";
     CLibrary library;
 
     library.PrepareDatabase();
@@ -98,7 +98,7 @@ void Test_Library_PrepareDatabase()
  */
 void Test_Library_DestroyDatabase()
 {
-    cout << "Test_DestroyDatabase... ";
+    cout << "Test_Library_DestroyDatabase... ";
     CLibrary library;
 
     // Make sure all tables and such exist
@@ -136,7 +136,7 @@ void Test_Library_DestroyDatabase()
  */
 void Test_Library_AddTrack()
 {
-    cout << "Test_AddTrack... ";
+    cout << "Test_Library_AddTrack... ";
     CLibrary library;
 
     // Make sure all tables and such exist
@@ -176,7 +176,7 @@ void Test_Library_AddTrack()
  */
 void Test_Library_AddPlaylist()
 {
-    cout << "Test_AddPlaylist... ";
+    cout << "Test_Library_AddPlaylist... ";
     CLibrary library;
 
     // Make sure all tables and such exist
