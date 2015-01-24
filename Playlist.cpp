@@ -5,6 +5,10 @@
 
 #include "Playlist.h"
 
+/**
+ * \brief Constructor for a playlist not in the database
+ * \param library Pointer to the library this playlist belongs to
+ */
 CPlaylist::CPlaylist(CLibrary *library)
 {
     mLibrary = library;
@@ -15,6 +19,11 @@ CPlaylist::CPlaylist(CLibrary *library)
     // Fill in any logic necessary to initialize an empty container for tracks
 }
 
+/**
+ * \brief Constructor for a playlist to be fetched from the database
+ * \param library Pointer to the library this playlist belongs to
+ * \param id Id of the playlist in the database
+ */
 CPlaylist::CPlaylist(CLibrary *library, std::string id)
 {
     mLibrary = library;
