@@ -295,6 +295,9 @@ void Test_Library_RemoveTrack()
     cout << "OK" << endl;
 }
 
+/**
+ * \brief Ensure playlists are properly removed as well as any records of track membership
+ */
 void Test_Library_RemovePlaylist()
 {
     cout << "Test_Library_RemovePlaylist... ";
