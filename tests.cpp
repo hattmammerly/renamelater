@@ -37,6 +37,8 @@ int main()
 
     Test_Library_AddPlaylist();
 
+    Test_Library_RemoveTrack();
+
     Test_Playlist_Constructors();
 
     Test_Playlist_AppendTrack();
@@ -212,6 +214,73 @@ void Test_Library_AddPlaylist()
     assert(title == playlist1);
 
     PQclear(res);
+
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+/**
+ * \brief Ensure tracks are removed from the database properly
+ * This includes removal from all playlists they have been added to
+ */
+void Test_Library_RemoveTrack()
+{
+    cout << "Test_Library_RemoveTrack... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    std::string track1_id = library.AddTrack(track1);
+    std::string track2_id = library.AddTrack(track2);
+
+    std::string playlist_id = library.AddPlaylist("test");
+    CPlaylist playlist(&library, playlist_id);
+    playlist.AppendTrack(track1_id);
+    playlist.AppendTrack(track2_id);
+
+    PGconn *conn = library.GetConnection();
+
+    std::string query = "SELECT * FROM tracks_playlists WHERE track_id = ";
+    char escaped_track1_id[30];
+    char escaped_track2_id[30];
+    PQescapeStringConn(conn, escaped_track1_id, track1_id.c_str(), 30, 0);
+    PQescapeStringConn(conn, escaped_track2_id, track2_id.c_str(), 30, 0);
+
+    std::string query1 = query + escaped_track1_id;
+    std::string query2 = query + escaped_track2_id;
+    PGresult *res1 = PQexec(conn, query1.c_str());
+    PGresult *res2 = PQexec(conn, query2.c_str());
+
+    assert(PQntuples(res1) == 2);
+    assert(PQntuples(res2) == 2);
+
+    PQclear(res1);
+    PQclear(res2);
+
+    library.RemoveTrack(track1_id);
+    library.RemoveTrack(track2_id);
+
+    std::string query3 = "SELECT * FROM tracks WHERE id = ";
+    query3.append(escaped_track1_id);
+    std::string query4 = "SELECT * FROM tracks WHERE id = ";
+    query3.append(escaped_track2_id);
+    PGresult *res3 = PQexec(conn, query3.c_str());
+    PGresult *res4 = PQexec(conn, query4.c_str());
+
+    res1 = PQexec(conn, query1.c_str());
+    res2 = PQexec(conn, query2.c_str());
+
+    assert(PQntuples(res1) == 0);
+    assert(PQntuples(res2) == 0);
+    assert(PQntuples(res3) == 0);
+    assert(PQntuples(res4) == 0);
+
+    PQclear(res1);
+    PQclear(res2);
+    PQclear(res3);
+    PQclear(res4);
 
     library.DestroyDatabase();
 
