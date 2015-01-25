@@ -86,3 +86,46 @@ std::string CPlaylist::AppendTrack(std::string id)
         return "temp";
     }
 }
+
+/**
+ * \brief Insert a track into a playlist
+ * \param id ID of the track to insert
+ * \param position Index you want the track to occupy, as a string
+ * \returns ID of the association record, or "temp" if a temp playlist
+ */
+std::string CPlaylist::InsertTrack(std::string id, std::string position)
+{
+    // Fill in any logic necessary to insert a Track object into this playlist's container
+
+    if (mId != "temp")
+    {
+        PGconn *conn = mLibrary->GetConnection();
+
+        char escaped_playlist_id[30];
+        PQescapeStringConn(conn, escaped_playlist_id, mId.c_str(), 30, 0);
+        char escaped_track_id[30];
+        PQescapeStringConn(conn, escaped_track_id, id.c_str(), 30, 0);
+        char escaped_position[30];
+        PQescapeStringConn(conn, escaped_position, position.c_str(), 30, 0);
+
+        std::string query = "INSERT INTO tracks_playlists (playlist_id, track_id, position) VALUES (";
+        query.append(escaped_playlist_id);
+        query.append(", ");
+        query.append(escaped_track_id);
+        query.append(", ");
+        query.append(escaped_position);
+        query.append(" - 0.5) RETURNING id"); // subtract 0.5
+
+        PGresult *res = PQexec(conn, query.c_str());
+
+        std::string associationId(PQgetvalue(res, 0, 0));
+        PQclear(res);
+
+        // We inserted a fraction, and now we want to correct all records to have integer positions
+        //Normalize(); // Not implemented yet
+
+        return associationId;
+    }
+
+    return "temp";
+}

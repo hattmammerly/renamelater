@@ -65,6 +65,8 @@ public:
 
     std::string AppendTrack(std::string id);
 
+    std::string InsertTrack(std::string id, std::string position);
+
 private:
     /// The id of the playlist in the database
     std::string mId;
