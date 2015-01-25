@@ -158,6 +158,8 @@ PGconn* CLibrary::GetConnection()
  * \brief Add a track to the database
  * \param filepath The filepath of the file to be added
  * \returns The ID of the new track (as a string)
+ *
+ * This method also adds the track to the all-library playlist created on database setup
  */
 std::string CLibrary::AddTrack(std::string filepath)
 {
@@ -175,6 +177,12 @@ std::string CLibrary::AddTrack(std::string filepath)
 
     // Create an std::string to return so we can appropriately free the PGresult
     std::string std_id(id);
+    PQclear(res);
+
+    // Add this track to the all-library playlist created on database setup
+    std::string query2 = "INSERT INTO tracks_playlists (track_id, playlist_id, position) SELECT " + std_id + ", 1, COALESCE(MAX(position), 0) + 1 FROM tracks_playlists RETURNING id";
+    res = PQexec(mConnection, query2.c_str());
+    std::cout << query2 + " ";
     PQclear(res);
 
     return std_id;
