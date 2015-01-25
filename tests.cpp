@@ -45,6 +45,8 @@ int main()
 
     Test_Playlist_AppendTrack();
 
+    Test_Playlist_InsertTrack();
+
     // So I can poke around manually after running tests
     //CLibrary library;
     //library.PrepareDatabase();
@@ -449,6 +451,80 @@ void Test_Playlist_AppendTrack()
         assert(track2_id == association2_track_id);
         assert("4" == association2_position);
         
+        PQclear(res);
+    }
+    else
+    {
+        assert(association1 == "temp");
+        assert(association2 == "temp");
+    }
+
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+/**
+ * \brief Ensure tracks can be inserted into playlists at arbitrary spots
+ *
+ * Note: This isn't done. positions must be rechecked when Normalize() is implemented
+ */
+void Test_Playlist_InsertTrack()
+{
+    cout << "Test_Playlist_InsertTrack... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    // Adding tracks that can be added to playlists
+    std::string track1_id = library.AddTrack(track1);
+    std::string track2_id = library.AddTrack(track2);
+
+    std::string db_playlist_id = library.AddPlaylist("test");
+
+    CPlaylist db_playlist(&library, db_playlist_id); // a playlist from the database
+    CPlaylist temp_playlist(&library);    // a temp playlist not in the database
+
+    std::string association1 = db_playlist.InsertTrack(track1_id, "1");
+    std::string association2 = db_playlist.InsertTrack(track2_id, "2");
+
+    std::string association3 = temp_playlist.InsertTrack(track1_id, "1");
+    std::string association4 = temp_playlist.InsertTrack(track2_id, "2");
+
+    assert(association3 == "temp");
+    assert(association4 == "temp");
+
+    // Insert logic to make sure Track objects were appropriately added to the container
+    // for both playlists
+
+    // Verify the proper database records were created
+    if (db_playlist.GetId() != "temp")
+    {
+        PGconn *conn = library.GetConnection();
+
+        std::string query = "SELECT id, playlist_id, track_id, position FROM tracks_playlists WHERE playlist_id = ";
+
+        char escaped_playlist_id[30];
+        PQescapeStringConn(conn, escaped_playlist_id, db_playlist.GetId().c_str(), 30, 0);
+        query.append(escaped_playlist_id);
+
+        PGresult *res = PQexec(conn, query.c_str());
+
+        std::string association1_playlist_id(PQgetvalue(res, 0, 1));
+        std::string association1_track_id(PQgetvalue(res, 0, 2));
+        std::string association1_position(PQgetvalue(res, 0, 3));
+        std::string association2_playlist_id(PQgetvalue(res, 1, 1));
+        std::string association2_track_id(PQgetvalue(res, 1, 2));
+        std::string association2_position(PQgetvalue(res, 1, 3));
+
+        assert(association1_playlist_id == db_playlist.GetId());
+        assert(association1_track_id == track1_id);
+        assert(association1_position == "0.5"); // Will change when Normalize() is implemented
+        assert(association2_playlist_id == db_playlist.GetId());
+        assert(association2_track_id == track2_id);
+        assert(association2_position == "1.5"); // Will change when Normalize() is implemented
+
         PQclear(res);
     }
     else
