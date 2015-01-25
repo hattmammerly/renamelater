@@ -241,7 +241,7 @@ std::string CLibrary::RemoveTrack(std::string id)
  */
 std::string CLibrary::RemovePlaylist(std::string id)
 {
-    std::string query = "DELETE FROM tracks WHERE id=";
+    std::string query = "DELETE FROM playlists WHERE id=";
 
     char escaped_id[30];
     PQescapeStringConn(mConnection, escaped_id, id.c_str(), 30, 0);
