@@ -316,18 +316,27 @@ void Test_Library_RemovePlaylist()
 
     PGconn *conn = library.GetConnection();
 
+    std::string playlist_query = "SELECT * FROM playlists WHERE id = " + playlist_id;
+    PGresult *res = PQexec(conn, playlist_query.c_str());
+    assert(PQntuples(res) == 1);
+    PQclear(res);
+
     std::string query = "SELECT * FROM tracks_playlists WHERE playlist_id = ";
     char escaped_playlist_id[30];
     PQescapeStringConn(conn, escaped_playlist_id, playlist_id.c_str(), 30, 0);
 
     query.append(escaped_playlist_id);
-    PGresult *res = PQexec(conn, query.c_str());
+    res = PQexec(conn, query.c_str());
 
     assert(PQntuples(res) == 2);
 
     PQclear(res);
 
     library.RemovePlaylist(playlist_id);
+
+    res = PQexec(conn, playlist_query.c_str());
+    assert(PQntuples(res) == 0);
+    PQclear(res);
 
     res = PQexec(conn, query.c_str());
 
