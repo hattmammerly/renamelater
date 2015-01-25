@@ -177,6 +177,12 @@ void Test_Library_AddTrack()
 
     PQclear(res);
 
+    std::string query2 = "SELECT * FROM tracks_playlists WHERE track_id = " + id;
+    res = PQexec(conn, query2.c_str());
+    assert(PQntuples(res) == 1);
+
+    PQclear(res);
+
     library.DestroyDatabase();
 
     cout << "OK" << endl;
