@@ -16,6 +16,8 @@ void Test_Library_AddTrack();
 
 void Test_Library_AddPlaylist();
 
+void Test_Library_RemoveTrack();
+
 void Test_Playlist_Constructors();
 
 void Test_Playlist_AppendTrack();

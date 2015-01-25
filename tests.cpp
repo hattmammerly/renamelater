@@ -367,23 +367,25 @@ void Test_Playlist_AppendTrack()
 
         PGresult *res = PQexec(conn, query.c_str());
 
-        std::string association1_id(PQgetvalue(res, 0, 0));
-        std::string association1_playlist_id(PQgetvalue(res, 0, 1));
-        std::string association1_track_id(PQgetvalue(res, 0, 2));
-        std::string association1_position(PQgetvalue(res, 0, 3));
-        std::string association2_id(PQgetvalue(res, 1, 0));
-        std::string association2_playlist_id(PQgetvalue(res, 1, 1));
-        std::string association2_track_id(PQgetvalue(res, 1, 2));
-        std::string association2_position(PQgetvalue(res, 1, 3));
+        // 0 and 1 should be auto-created when tracks are added
+        // 2 and 3 are the new records we just added
+        std::string association1_id(PQgetvalue(res, 2, 0));
+        std::string association1_playlist_id(PQgetvalue(res, 2, 1));
+        std::string association1_track_id(PQgetvalue(res, 2, 2));
+        std::string association1_position(PQgetvalue(res, 2, 3));
+        std::string association2_id(PQgetvalue(res, 3, 0));
+        std::string association2_playlist_id(PQgetvalue(res, 3, 1));
+        std::string association2_track_id(PQgetvalue(res, 3, 2));
+        std::string association2_position(PQgetvalue(res, 3, 3));
 
         assert(association1 == association1_id);
         assert(db_playlist.GetId() == association1_playlist_id);
         assert(track1_id == association1_track_id);
-        assert("1" == association1_position);
+        assert("3" == association1_position);
         assert(association2 == association2_id);
         assert(db_playlist.GetId() == association2_playlist_id);
         assert(track2_id == association2_track_id);
-        assert("2" == association2_position);
+        assert("4" == association2_position);
         
         PQclear(res);
     }
