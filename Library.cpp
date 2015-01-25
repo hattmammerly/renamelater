@@ -182,7 +182,6 @@ std::string CLibrary::AddTrack(std::string filepath)
     // Add this track to the all-library playlist created on database setup
     std::string query2 = "INSERT INTO tracks_playlists (track_id, playlist_id, position) SELECT " + std_id + ", 1, COALESCE(MAX(position), 0) + 1 FROM tracks_playlists RETURNING id";
     res = PQexec(mConnection, query2.c_str());
-    std::cout << query2 + " ";
     PQclear(res);
 
     return std_id;
