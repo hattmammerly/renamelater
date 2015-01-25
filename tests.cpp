@@ -39,6 +39,8 @@ int main()
 
     Test_Library_RemoveTrack();
 
+    Test_Library_RemovePlaylist();
+
     Test_Playlist_Constructors();
 
     Test_Playlist_AppendTrack();
@@ -281,6 +283,48 @@ void Test_Library_RemoveTrack()
     PQclear(res2);
     PQclear(res3);
     PQclear(res4);
+
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+void Test_Library_RemovePlaylist()
+{
+    cout << "Test_Library_RemovePlaylist... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    std::string track1_id = library.AddTrack(track1);
+    std::string track2_id = library.AddTrack(track2);
+
+    std::string playlist_id = library.AddPlaylist("test");
+    CPlaylist playlist(&library, playlist_id);
+    playlist.AppendTrack(track1_id);
+    playlist.AppendTrack(track2_id);
+
+    PGconn *conn = library.GetConnection();
+
+    std::string query = "SELECT * FROM tracks_playlists WHERE playlist_id = ";
+    char escaped_playlist_id[30];
+    PQescapeStringConn(conn, escaped_playlist_id, playlist_id.c_str(), 30, 0);
+
+    query.append(escaped_playlist_id);
+    PGresult *res = PQexec(conn, query.c_str());
+
+    assert(PQntuples(res) == 2);
+
+    PQclear(res);
+
+    library.RemovePlaylist(playlist_id);
+
+    res = PQexec(conn, query.c_str());
+
+    assert(PQntuples(res) == 0);
+
+    PQclear(res);
 
     library.DestroyDatabase();
 
