@@ -466,8 +466,6 @@ void Test_Playlist_AppendTrack()
 
 /**
  * \brief Ensure tracks can be inserted into playlists at arbitrary spots
- *
- * Note: This isn't done. positions must be rechecked when Normalize() is implemented
  */
 void Test_Playlist_InsertTrack()
 {
@@ -520,10 +518,10 @@ void Test_Playlist_InsertTrack()
 
         assert(association1_playlist_id == db_playlist.GetId());
         assert(association1_track_id == track1_id);
-        assert(association1_position == "0.5"); // Will change when Normalize() is implemented
+        assert(association1_position == "1");
         assert(association2_playlist_id == db_playlist.GetId());
         assert(association2_track_id == track2_id);
-        assert(association2_position == "1.5"); // Will change when Normalize() is implemented
+        assert(association2_position == "2");
 
         PQclear(res);
     }
