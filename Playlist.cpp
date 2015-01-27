@@ -122,10 +122,37 @@ std::string CPlaylist::InsertTrack(std::string id, std::string position)
         PQclear(res);
 
         // We inserted a fraction, and now we want to correct all records to have integer positions
-        //Normalize(); // Not implemented yet
+        Normalize();
 
         return associationId;
     }
 
     return "temp";
+}
+
+/**
+ * \brief Normalize a playlist's positions to be all integers
+ *
+ * Inserts are done by inserting fractions into the position column,
+ * and this function will normalize a playlist so all positions are
+ * integers.
+ */
+void CPlaylist::Normalize()
+{
+    if (mId != "temp")
+    {
+        PGconn *conn = mLibrary->GetConnection();
+
+        char escaped_id[30];
+        PQescapeStringConn(conn, escaped_id, mId.c_str(), 30, 0);
+
+        std::string query = "WITH Sub AS (SELECT id, row_number() OVER (ORDER BY position) FROM tracks_playlists WHERE playlist_id=";
+        query.append(escaped_id);
+        query.append(") UPDATE tracks_playlists AS Main SET position = Sub.row_number FROM Sub WHERE Main.id = Sub.id");
+
+        PGresult *res = PQexec(conn, query.c_str());
+        PQclear(res);
+    }
+
+    return;
 }

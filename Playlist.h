@@ -67,6 +67,8 @@ public:
 
     std::string InsertTrack(std::string id, std::string position);
 
+    void Normalize();
+
 private:
     /// The id of the playlist in the database
     std::string mId;
