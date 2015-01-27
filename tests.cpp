@@ -32,7 +32,7 @@ int main()
     Test_Library_PrepareDatabase();
 
     Test_Library_DestroyDatabase();
-    
+
     Test_Library_AddTrack();
 
     Test_Library_AddPlaylist();
@@ -46,6 +46,8 @@ int main()
     Test_Playlist_AppendTrack();
 
     Test_Playlist_InsertTrack();
+
+    Test_Playlist_Normalize();
 
     // So I can poke around manually after running tests
     //CLibrary library;
@@ -530,6 +532,50 @@ void Test_Playlist_InsertTrack()
         assert(association1 == "temp");
         assert(association2 == "temp");
     }
+
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+void Test_Playlist_Normalize()
+{
+    cout << "Test_Playlist_Normalize... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    std::string playlist_id = library.AddPlaylist("test");
+    CPlaylist playlist(&library, playlist_id);
+
+    playlist.InsertTrack("1", "-1"); // should fall to -1.5 and normalize to 1
+    playlist.InsertTrack("2", "100"); // should fall to 99.5 and normalize to 2
+    playlist.InsertTrack("3", "2.3"); // should fall to 1.8 and normalize to 2 (putting above in 3)
+    playlist.InsertTrack("4", "4.6"); // should fall to 4.1 and normalize to 4
+
+    PGconn *conn = library.GetConnection();
+
+    std::string query = "SELECT id, playlist_id, track_id, position FROM tracks_playlists WHERE playlist_id = ";
+
+    char escaped_playlist_id[30];
+    PQescapeStringConn(conn, escaped_playlist_id, playlist.GetId().c_str(), 30, 0);
+    query.append(escaped_playlist_id);
+    query.append(" ORDER BY position");
+
+    PGresult *res = PQexec(conn, query.c_str());
+
+    std::string id1(PQgetvalue(res, 0, 2));
+    std::string id2(PQgetvalue(res, 1, 2));
+    std::string id3(PQgetvalue(res, 2, 2));
+    std::string id4(PQgetvalue(res, 3, 2));
+
+    assert(id1 == "1");
+    assert(id2 == "3");
+    assert(id3 == "2");
+    assert(id4 == "4");
+
+    PQclear(res);
 
     library.DestroyDatabase();
 

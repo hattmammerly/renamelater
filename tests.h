@@ -26,4 +26,6 @@ void Test_Playlist_AppendTrack();
 
 void Test_Playlist_InsertTrack();
 
+void Test_Playlist_Normalize();
+
 #endif
