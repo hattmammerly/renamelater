@@ -538,6 +538,9 @@ void Test_Playlist_InsertTrack()
     cout << "OK" << endl;
 }
 
+/**
+ * \brief Ensure playlist positions are normalized properly
+ */
 void Test_Playlist_Normalize()
 {
     cout << "Test_Playlist_Normalize... ";
