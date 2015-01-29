@@ -156,3 +156,26 @@ void CPlaylist::Normalize()
 
     return;
 }
+
+void CPlaylist::RemoveTrack(std::string position)
+{
+    // Fill in any logic necessary to remove a track from the collection of Track objects
+
+    if (mId != "temp")
+    {
+        PGconn *conn = mLibrary->GetConnection();
+
+        char escaped_id[30];
+        PQescapeStringConn(conn, escaped_id, mId.c_str(), 30, 0);
+        char escaped_position[30];
+        PQescapeStringConn(conn, escaped_position, position.c_str(), 30, 0);
+
+        std::string query = "DELETE FROM tracks_playlists WHERE position=";
+        query.append(escaped_position);
+        query.append(" AND playlist_id=");
+        query.append(escaped_id);
+
+        PGresult *res = PQexec(conn, query.c_str());
+        PQclear(res);
+    }
+}

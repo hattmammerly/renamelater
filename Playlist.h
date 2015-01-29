@@ -69,6 +69,8 @@ public:
 
     void Normalize();
 
+    void RemoveTrack(std::string position);
+
 private:
     /// The id of the playlist in the database
     std::string mId;
