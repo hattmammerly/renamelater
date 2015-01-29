@@ -157,6 +157,10 @@ void CPlaylist::Normalize()
     return;
 }
 
+/**
+ * \brief Remove a track from a playlist by position
+ * \param position Index of the track to remove
+ */
 void CPlaylist::RemoveTrack(std::string position)
 {
     // Fill in any logic necessary to remove a track from the collection of Track objects
