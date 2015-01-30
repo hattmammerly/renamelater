@@ -231,6 +231,22 @@ std::string CLibrary::RemoveTrack(std::string id)
     PGresult *res = PQexec(mConnection, query.c_str());
     PQclear(res);
 
+    // We need to now normalize every playlist
+    // Ideally we'll only normalize those playlists the track was actually in
+    // but I'll do that some other day
+    res = PQexec(mConnection, "SELECT id FROM playlists");
+    int n = PQntuples(res);
+    for (int i = 0; i < n; ++i)
+    {
+        char *id = PQgetvalue(res, i, 0);
+
+        std::string normalize_query = "WITH Sub AS (SELECT id, row_number() OVER (ORDER BY position) FROM tracks_playlists WHERE playlist_id=";
+        normalize_query.append(id);
+        normalize_query.append(") UPDATE tracks_playlists AS Main SET position = Sub.row_number FROM Sub WHERE Main.id = Sub.id");
+
+        PQclear(PQexec(mConnection, normalize_query.c_str()));
+    }
+
     return id;
 }
 
