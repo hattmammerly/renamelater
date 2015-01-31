@@ -272,7 +272,15 @@ void Test_Library_RemoveTrack()
     PQclear(res2);
 
     library.RemoveTrack(track1_id);
+    res1 = PQexec(conn, query1.c_str());
+    assert(PQntuples(res1) == 0);
+
     library.RemoveTrack(track2_id);
+    res2 = PQexec(conn, query2.c_str());
+    assert(PQntuples(res2) == 0);
+
+    PQclear(res1);
+    PQclear(res2);
 
     std::string query3 = "SELECT * FROM tracks WHERE id = ";
     query3.append(escaped_track1_id);
@@ -281,16 +289,9 @@ void Test_Library_RemoveTrack()
     PGresult *res3 = PQexec(conn, query3.c_str());
     PGresult *res4 = PQexec(conn, query4.c_str());
 
-    res1 = PQexec(conn, query1.c_str());
-    res2 = PQexec(conn, query2.c_str());
-
-    assert(PQntuples(res1) == 0);
-    assert(PQntuples(res2) == 0);
     assert(PQntuples(res3) == 0);
     assert(PQntuples(res4) == 0);
 
-    PQclear(res1);
-    PQclear(res2);
     PQclear(res3);
     PQclear(res4);
 
