@@ -246,6 +246,7 @@ std::string CLibrary::RemoveTrack(std::string id)
 
         PQclear(PQexec(mConnection, normalize_query.c_str()));
     }
+    PQclear(res);
 
     return id;
 }
