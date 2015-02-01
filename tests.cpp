@@ -49,6 +49,8 @@ int main()
 
     Test_Playlist_Normalize();
 
+    Test_Playlist_RemoveTrack();
+
     // So I can poke around manually after running tests
     //CLibrary library;
     //library.PrepareDatabase();
@@ -608,6 +610,42 @@ void Test_Playlist_Normalize()
     assert(id2 == "3");
     assert(id3 == "2");
     assert(id4 == "4");
+
+    PQclear(res);
+
+    library.DestroyDatabase();
+
+    cout << "OK" << endl;
+}
+
+void Test_Playlist_RemoveTrack()
+{
+    cout << "Test_Playlist_RemoveTrack... ";
+    CLibrary library;
+
+    // Make sure all tables and such exist
+    library.PrepareDatabase();
+
+    std::string playlist_id = library.AddPlaylist("test");
+    CPlaylist playlist(&library, playlist_id);
+
+    playlist.InsertTrack("1", "1");
+    playlist.InsertTrack("2", "2");
+    playlist.InsertTrack("4", "3");
+    playlist.InsertTrack("3", "4");
+
+    playlist.RemoveTrack("3");
+
+    PGconn *conn = library.GetConnection();
+
+    std::string query = "SELECT id, playlist_id, track_id, position FROM tracks_playlists WHERE playlist_id = ";
+    char escaped_playlist_id[30];
+    PQescapeStringConn(conn, escaped_playlist_id, playlist.GetId().c_str(), 30, 0);
+    query.append(escaped_playlist_id);
+
+    PGresult *res = PQexec(conn, query.c_str());
+
+    assert(PQntuples(res) == 3);
 
     PQclear(res);
 
