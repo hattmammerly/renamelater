@@ -618,6 +618,9 @@ void Test_Playlist_Normalize()
     cout << "OK" << endl;
 }
 
+/**
+ * \brief Ensure tracks are removed from playlists properly
+ */
 void Test_Playlist_RemoveTrack()
 {
     cout << "Test_Playlist_RemoveTrack... ";
