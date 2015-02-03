@@ -647,6 +647,14 @@ void Test_Playlist_RemoveTrack()
 
     assert(PQntuples(res) == 3);
 
+    std::string track1_id(PQgetvalue(res, 0, 2));
+    std::string track2_id(PQgetvalue(res, 1, 2));
+    std::string track3_id(PQgetvalue(res, 2, 2));
+
+    assert(track1_id == "1");
+    assert(track2_id == "2");
+    assert(track3_id == "3");
+
     PQclear(res);
 
     library.DestroyDatabase();
