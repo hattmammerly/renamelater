@@ -585,10 +585,10 @@ void Test_Playlist_Normalize()
     std::string playlist_id = library.AddPlaylist("test");
     CPlaylist playlist(&library, playlist_id);
 
-    playlist.InsertTrack("1", "-1"); // should fall to -1.5 and normalize to 1
+    playlist.InsertTrack("1", "1"); // should fall to 0.5 and normalize to 1
     playlist.InsertTrack("2", "100"); // should fall to 99.5 and normalize to 2
-    playlist.InsertTrack("3", "2.3"); // should fall to 1.8 and normalize to 2 (putting above in 3)
-    playlist.InsertTrack("4", "4.6"); // should fall to 4.1 and normalize to 4
+    playlist.InsertTrack("3", "2"); // should fall to 1.5 and normalize to 2 (putting above in 3)
+    playlist.InsertTrack("4", "4"); // should fall to 4.1 and normalize to 4
 
     PGconn *conn = library.GetConnection();
 
