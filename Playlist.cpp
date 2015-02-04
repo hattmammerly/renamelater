@@ -95,6 +95,13 @@ std::string CPlaylist::AppendTrack(std::string id)
  */
 std::string CPlaylist::InsertTrack(std::string id, std::string position)
 {
+    // Ignore empty inputs
+    if (position.empty() || position.find_first_not_of("0123456789") != std::string::npos)
+    {
+        // this is a terrible hack and I need to change it
+        return "null";
+    }
+
     // Fill in any logic necessary to insert a Track object into this playlist's container
 
     if (mId != "temp")
@@ -163,6 +170,12 @@ void CPlaylist::Normalize()
  */
 void CPlaylist::RemoveTrack(std::string position)
 {
+    // Ignore empty inputs
+    if (position.empty() || position.find_first_not_of("0123456789") != std::string::npos)
+    {
+        return;
+    }
+
     // Fill in any logic necessary to remove a track from the collection of Track objects
 
     if (mId != "temp")
