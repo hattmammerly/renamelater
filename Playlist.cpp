@@ -58,6 +58,8 @@ std::string CPlaylist::AppendTrack(std::string id)
 {
     // Fill in any logic necessary to append a Track object to this playlist's container
 
+    mLength = std::to_string(std::stoi(mLength, nullptr, 10) + 1);
+
     if (mId != "temp")
     {
         PGconn* conn = mLibrary->GetConnection();
@@ -103,6 +105,8 @@ std::string CPlaylist::InsertTrack(std::string id, std::string position)
     }
 
     // Fill in any logic necessary to insert a Track object into this playlist's container
+
+    mLength = std::to_string(std::stoi(mLength, nullptr, 10) + 1);
 
     if (mId != "temp")
     {
@@ -177,6 +181,8 @@ void CPlaylist::RemoveTrack(std::string position)
     }
 
     // Fill in any logic necessary to remove a track from the collection of Track objects
+
+    mLength = std::to_string(std::stoi(mLength, nullptr, 10) - 1);
 
     if (mId != "temp")
     {
