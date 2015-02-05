@@ -519,11 +519,19 @@ void Test_Playlist_InsertTrack()
     CPlaylist db_playlist(&library, db_playlist_id); // a playlist from the database
     CPlaylist temp_playlist(&library);    // a temp playlist not in the database
 
+    assert(db_playlist.GetLength() == "0");
+
     std::string association1 = db_playlist.InsertTrack(track1_id, "1");
     std::string association2 = db_playlist.InsertTrack(track2_id, "2");
 
+    assert(db_playlist.GetLength() == "2");
+
+    assert(temp_playlist.GetLength() == "0");
+
     std::string association3 = temp_playlist.InsertTrack(track1_id, "1");
     std::string association4 = temp_playlist.InsertTrack(track2_id, "2");
+
+    assert(temp_playlist.GetLength() == "2");
 
     assert(association3 == "temp");
     assert(association4 == "temp");
@@ -637,6 +645,8 @@ void Test_Playlist_RemoveTrack()
     playlist.InsertTrack("4", "3");
     playlist.InsertTrack("3", "4");
 
+    assert(playlist.GetLength() == "4");
+
     playlist.RemoveTrack("3");
 
     PGconn *conn = library.GetConnection();
@@ -657,6 +667,8 @@ void Test_Playlist_RemoveTrack()
     assert(track1_id == "1");
     assert(track2_id == "2");
     assert(track3_id == "3");
+
+    assert(playlist.GetLength() == "3");
 
     PQclear(res);
 
