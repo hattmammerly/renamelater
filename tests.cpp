@@ -441,11 +441,19 @@ void Test_Playlist_AppendTrack()
     CPlaylist db_playlist(&library, playlist_id); // a playlist from the database
     CPlaylist temp_playlist(&library);    // a temp playlist not in the database
 
+    assert(db_playlist.GetLength() == "0");
+
     std::string association1 = db_playlist.AppendTrack(track1_id);
     std::string association2 = db_playlist.AppendTrack(track2_id);
 
+    assert(db_playlist.GetLength() == "2");
+
+    assert(temp_playlist.GetLength() == "0");
+
     std::string association3 = temp_playlist.AppendTrack(track1_id);
     std::string association4 = temp_playlist.AppendTrack(track2_id);
+
+    assert(temp_playlist.GetLength() == "2");
 
     assert(association3 == "temp");
     assert(association4 == "temp");
