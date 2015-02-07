@@ -269,63 +269,63 @@ void Test_Library_RemoveTrack()
     std::string query1 = query + escaped_track1_id;
     std::string query2 = query + escaped_track2_id;
     std::string query3 = query + escaped_track3_id;
-    PGresult *res1 = PQexec(conn, query1.c_str());
-    PGresult *res2 = PQexec(conn, query2.c_str());
-    PGresult *res3 = PQexec(conn, query3.c_str());
+    PGresult *playlist_entry1_res = PQexec(conn, query1.c_str());
+    PGresult *playlist_entry2_res = PQexec(conn, query2.c_str());
+    PGresult *playlist_entry3_res = PQexec(conn, query3.c_str());
 
-    assert(PQntuples(res1) == 2);
-    assert(PQntuples(res2) == 2);
-    assert(PQntuples(res3) == 2);
+    assert(PQntuples(playlist_entry1_res) == 2);
+    assert(PQntuples(playlist_entry2_res) == 2);
+    assert(PQntuples(playlist_entry3_res) == 2);
 
-    PQclear(res1);
-    PQclear(res2);
-    PQclear(res3);
+    PQclear(playlist_entry1_res);
+    PQclear(playlist_entry2_res);
+    PQclear(playlist_entry3_res);
 
     library.RemoveTrack(track1_id);
-    res1 = PQexec(conn, query1.c_str());
-    assert(PQntuples(res1) == 0);
+    playlist_entry1_res = PQexec(conn, query1.c_str());
+    assert(PQntuples(playlist_entry1_res) == 0);
 
     library.RemoveTrack(track2_id);
-    res2 = PQexec(conn, query2.c_str());
-    assert(PQntuples(res2) == 0);
+    playlist_entry2_res = PQexec(conn, query2.c_str());
+    assert(PQntuples(playlist_entry2_res) == 0);
 
     // we didn't delete this track, make sure it is still in there
-    res3 = PQexec(conn, query3.c_str());
-    assert(PQntuples(res3) == 2);
+    playlist_entry3_res = PQexec(conn, query3.c_str());
+    assert(PQntuples(playlist_entry3_res) == 2);
 
-    PQclear(res1);
-    PQclear(res2);
-    PQclear(res3);
+    PQclear(playlist_entry1_res);
+    PQclear(playlist_entry2_res);
+    PQclear(playlist_entry3_res);
 
     std::string position_query = "SELECT * FROM tracks_playlists WHERE playlist_id=";
     char escaped_playlist_id[30];
     PQescapeStringConn(conn, escaped_playlist_id, playlist.GetId().c_str(), 30, 0);
     position_query.append(escaped_playlist_id);
-    res1 = PQexec(conn, position_query.c_str());
-    assert(PQntuples(res1) == 1); // one track should remain
-    std::string final_position(PQgetvalue(res1, 0, 3));
+    playlist_entry1_res = PQexec(conn, position_query.c_str());
+    assert(PQntuples(playlist_entry1_res) == 1); // one track should remain
+    std::string final_position(PQgetvalue(playlist_entry1_res, 0, 3));
     assert(final_position == "1"); // it should be normalized to first position
-    PQclear(res1);
+    PQclear(playlist_entry1_res);
 
     std::string playlist_length_query = "SELECT * FROM playlists WHERE id=";
     playlist_length_query.append(escaped_playlist_id);
-    res1 = PQexec(conn, playlist_length_query.c_str());
-    std::string final_length(PQgetvalue(res1, 0, 2));
+    playlist_entry1_res = PQexec(conn, playlist_length_query.c_str());
+    std::string final_length(PQgetvalue(playlist_entry1_res, 0, 2));
     assert(final_length == "1");
-    PQclear(res1);
+    PQclear(playlist_entry1_res);
 
     std::string query4 = "SELECT * FROM tracks WHERE id = ";
     query4.append(escaped_track1_id);
     std::string query5 = "SELECT * FROM tracks WHERE id = ";
     query5.append(escaped_track2_id);
-    PGresult *res4 = PQexec(conn, query4.c_str());
-    PGresult *res5 = PQexec(conn, query5.c_str());
+    PGresult *track1_res = PQexec(conn, query4.c_str());
+    PGresult *track2_res = PQexec(conn, query5.c_str());
 
-    assert(PQntuples(res4) == 0);
-    assert(PQntuples(res5) == 0);
+    assert(PQntuples(track1_res) == 0);
+    assert(PQntuples(track2_res) == 0);
 
-    PQclear(res4);
-    PQclear(res5);
+    PQclear(track1_res);
+    PQclear(track2_res);
 
     library.DestroyDatabase();
 
