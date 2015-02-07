@@ -205,7 +205,7 @@ void Test_Library_AddPlaylist()
     // Make sure all tables and such exist
     library.PrepareDatabase();
 
-    std::string id = library.AddPlaylist(playlist1);
+    std::string playlist_id = library.AddPlaylist(playlist1);
     
     // We need the unwrapped connection object for arbitrary queries to test
     PGconn *conn = library.GetConnection();
@@ -214,20 +214,20 @@ void Test_Library_AddPlaylist()
 
     // id should never not be a numeric string but safety first
     char escaped_id[30];
-    PQescapeStringConn(conn, escaped_id, id.c_str(), 30, 0);
+    PQescapeStringConn(conn, escaped_id, playlist_id.c_str(), 30, 0);
     query.append(escaped_id);
 
-    PGresult *res = PQexec(conn, query.c_str());
+    PGresult *playlist_res = PQexec(conn, query.c_str());
 
     // Is there actually a row inserted with our id?
-    std::string new_id(PQgetvalue(res, 0, 0));
-    assert(new_id == id);
+    std::string new_id(PQgetvalue(playlist_res, 0, 0));
+    assert(new_id == playlist_id);
 
     // Is it the same one (same title) that we entered?
-    std::string title(PQgetvalue(res, 0, 1));
+    std::string title(PQgetvalue(playlist_res, 0, 1));
     assert(title == playlist1);
 
-    PQclear(res);
+    PQclear(playlist_res);
 
     library.DestroyDatabase();
 
