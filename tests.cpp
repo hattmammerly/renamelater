@@ -159,7 +159,7 @@ void Test_Library_AddTrack()
     // Make sure all tables and such exist
     library.PrepareDatabase();
 
-    std::string id = library.AddTrack(track1);
+    std::string track1_id = library.AddTrack(track1);
 
     // We need the unwrapped connection object for arbitrary queries to test
     PGconn* conn = library.GetConnection();
@@ -168,26 +168,26 @@ void Test_Library_AddTrack()
 
     // id should never not be a numeric string but safety first
     char escaped_id[30];
-    PQescapeStringConn(conn, escaped_id, id.c_str(), 30, 0);
+    PQescapeStringConn(conn, escaped_id, track1_id.c_str(), 30, 0);
     query.append(escaped_id);
 
-    PGresult* res = PQexec(conn, query.c_str());
+    PGresult* track_res = PQexec(conn, query.c_str());
 
     // Is there actually a row inserted with our id?
-    std::string new_id(PQgetvalue(res, 0, 0));
-    assert(new_id == id);
+    std::string new_id(PQgetvalue(track_res, 0, 0));
+    assert(new_id == track1_id);
 
     // Is it the same one (same filepath) that we entered?
-    std::string filepath(PQgetvalue(res, 0, 1));
+    std::string filepath(PQgetvalue(track_res, 0, 1));
     assert(filepath == track1);
 
-    PQclear(res);
+    PQclear(track_res);
 
-    std::string query2 = "SELECT * FROM tracks_playlists WHERE track_id = " + id;
-    res = PQexec(conn, query2.c_str());
-    assert(PQntuples(res) == 1);
+    std::string query2 = "SELECT * FROM tracks_playlists WHERE track_id = " + track1_id;
+    PGresult *playlist_entry_res = PQexec(conn, query2.c_str());
+    assert(PQntuples(playlist_entry_res) == 1);
 
-    PQclear(res);
+    PQclear(playlist_entry_res);
 
     library.DestroyDatabase();
 
